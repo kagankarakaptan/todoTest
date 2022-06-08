@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { addData } from "../stores/listSlice";
 
+
 export default function List() {
 
     const dispatch = useDispatch();
@@ -35,15 +36,23 @@ export default function List() {
         //this will run 1 time at the app begins
         //get all items as data from db according to the date value
 
-        sampleData.map((obj, i) => {
+        /* sampleData.map((obj, i) => {
             dispatch(addData({ id: i, ...obj, tic: false, previousType: obj.type }))
-        })
+        }) */
 
-
+        /*  const q = query(collection(db, "todos"));
+         const unsub = onSnapshot(q, (querySnapshot) => {
+             let data = [];
+             querySnapshot.forEach((doc) => {
+                 data.push({ ...doc.data(), id: doc.id });
+             });
+             setTodos(data);
+         });
+         return () => unsub();
+  */
 
     }, [])
 
-    console.log(data)
 
 
     const dataParser = (type) => data.map(element => {

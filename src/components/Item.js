@@ -13,7 +13,6 @@ export default function Item(props) {
 
 
 
-
     const saveHandler = e => {
         //saves the item value to the db
     }
