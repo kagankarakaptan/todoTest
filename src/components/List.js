@@ -3,59 +3,48 @@ import Item from "./Item"
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
-import { addData } from "../stores/listSlice";
+import { setArray } from "../stores/listSlice";
+import { db } from "../firebase";
+import {
+    collection,
+    query,
+    onSnapshot,
+    doc,
+    updateDoc,
+    deleteDoc,
+} from "firebase/firestore";
 
 
 export default function List() {
 
     const dispatch = useDispatch();
-    const data = useSelector(state => state.list)
-
-    const sampleData = [{ value: "1", type: "To Do", date: "" },
-    { value: "2", type: "To Do", date: "" },
-    { value: "3", type: "To Do", date: "" },
-    { value: "4", type: "To Do", date: "" },
-    { value: "5", type: "To Do", date: "" },
-    { value: "6", type: "To Do", date: "" },
-    { value: "7", type: "Done", date: "" },
-    { value: "8", type: "Done", date: "" },
-    { value: "9", type: "Done", date: "" },
-    { value: "10", type: "Done", date: "" },
-    { value: "11", type: "Done", date: "" },
-    { value: "12", type: "Done", date: "" },
-    { value: "13", type: "Done", date: "" },
-    { value: "14", type: "In Progress", date: "" },
-    { value: "15", type: "In Progress", date: "" },
-    { value: "16", type: "In Progress", date: "" },
-    { value: "17", type: "In Progress", date: "" },
-    { value: "18", type: "In Progress", date: "" },
-    { value: "19", type: "In Progress", date: "" },
-    { value: "20", type: "In Progress", date: "" }]
+    const { todos } = useSelector(state => state.list)
 
     useEffect(() => {
         //this will run 1 time at the app begins
         //get all items as data from db according to the date value
 
-        /* sampleData.map((obj, i) => {
-            dispatch(addData({ id: i, ...obj, tic: false, previousType: obj.type }))
-        }) */
+        const d = new Date();
+        const date = d.getDate().toString() + "." + (d.getMonth() + 1).toString() + "." + d.getFullYear().toString();
+        //get the selected date from calender instead
 
-        /*  const q = query(collection(db, "todos"));
-         const unsub = onSnapshot(q, (querySnapshot) => {
-             let data = [];
-             querySnapshot.forEach((doc) => {
-                 data.push({ ...doc.data(), id: doc.id });
-             });
-             setTodos(data);
-         });
-         return () => unsub();
-  */
+        const q = query(collection(db, date));
+        onSnapshot(q, (querySnapshot) => {
+            let newArr = [];
+            querySnapshot.forEach((doc) => {
+                const newData = { ...doc.data(), id: doc.id };
+                newArr.push(newData);
+            });
+            dispatch(setArray(newArr))
+
+        });
 
     }, [])
 
 
 
-    const dataParser = (type) => data.map(element => {
+    const dataParser = (type) => todos.map(element => {
+        /* console.log(element) */
         if (type !== element.type) return null;
         return (
             <Item
@@ -67,7 +56,7 @@ export default function List() {
 
     });
 
-    if (data.length === 0) return null;
+    if (todos.length === 0) return null;
     return (
         <div>
             <div>

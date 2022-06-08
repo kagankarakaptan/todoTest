@@ -3,35 +3,36 @@ import { createSlice } from "@reduxjs/toolkit";
 export const listSlice = createSlice({
     name: "List",
 
-    initialState: [],
+    initialState: {
+        todos: [],
+    },
 
     reducers: {
 
-        addData: (state, action) => {
-
-            state.push(action.payload);
-
+        setArray: (state, action) => {
+            state.todos = action.payload
         },
 
         setData: (state, action) => {
             const { id, value } = action.payload;
-            const index = state.findIndex(item => item.id === id);
+            const index = state.todos.findIndex(item => item.id === id);
             state[index].value = value;
         },
 
         setToggle: (state, action) => {
-            const index = state.findIndex(item => item.id === action.payload)
-            state[index].tic ?
-                state[index].type = state[index].previousType :
-                state[index].type = "Done"
+            const index = state.todos.findIndex(item => item.id === action.payload)
+            state.todos[index].tic ?
+                state.todos[index].type = state.todos[index].previousType :
+                state.todos[index].type = "Done"
 
-            state[index].tic = !state[index].tic
+            state.todos[index].tic = !state.todos[index].tic
         }
+
     }
 
 })
 
 
-export const { addData, setData, setToggle } = listSlice.actions
+export const { setArray, setData, setToggle } = listSlice.actions
 
 export default listSlice.reducer;

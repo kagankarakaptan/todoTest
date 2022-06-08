@@ -1,30 +1,26 @@
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import { setItem } from "../stores/addToDoSlice";
 import { collection, query, onSnapshot, doc, updateDoc, deleteDoc, addDoc } from "firebase/firestore";
-import { db } from "../firebase"
+import { useState } from "react"
+import { db } from "../firebase";
 
 
 export default function AddToDo() {
 
-    const { value } = useSelector(state => state.addToDo)
-    const dispatch = useDispatch();
+    const [value, setValue] = useState("");
 
     const handleSubmit = async e => {
         e.preventDefault();
         if (value !== "") {
             //send the item data to db
 
+            const d = new Date();
+            const date = d.getDate().toString() + "." + (d.getMonth() + 1).toString() + "." + d.getFullYear().toString();
 
-
-            await addDoc(collection(db, "todos"), {
-                value,
-                completed: false,
-                date: Date.now(),
-                
+            await addDoc(collection(db, date), {
+                value: value,
+                tic: false,
+                type: "To Do",
+                previousType: "To Do"
             });
-
-
         }
     }
 
@@ -36,7 +32,7 @@ export default function AddToDo() {
                     type="text"
                     placeholder="+New"
                     value={value}
-                    onChange={e => dispatch(setItem(e.target.value))}
+                    onChange={e => setValue(e.target.value)}
                     onFocus={e => e.target.placeholder = ""}
                     onBlur={e => e.target.placeholder = "+New"}
                 />

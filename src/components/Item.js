@@ -7,8 +7,8 @@ export default function Item(props) {
 
     const dispatch = useDispatch()
 
-    const index = useSelector(state => state.list).findIndex(item => item.id == props.id);
-    const list = useSelector(state => state.list);
+    const index = useSelector(state => state.list).todos.findIndex(item => item.id === props.id);
+    const list = useSelector(state => state.list).todos;
     const { id, value, tic } = list[index];
 
 
