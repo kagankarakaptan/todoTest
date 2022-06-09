@@ -16,23 +16,16 @@ export const listSlice = createSlice({
         setData: (state, action) => {
             const { id, value } = action.payload;
             const index = state.todos.findIndex(item => item.id === id);
-            state[index].value = value;
+            state.todos[index].value = value;
         },
-
-        setToggle: (state, action) => {
-            const index = state.todos.findIndex(item => item.id === action.payload)
-            state.todos[index].tic ?
-                state.todos[index].type = state.todos[index].previousType :
-                state.todos[index].type = "Done"
-
-            state.todos[index].tic = !state.todos[index].tic
-        }
 
     }
 
 })
 
 
-export const { setArray, setData, setToggle } = listSlice.actions
+export const { setArray, setData } = listSlice.actions
 
 export default listSlice.reducer;
+
+//adını todos olarak değiştir

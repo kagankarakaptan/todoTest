@@ -1,6 +1,13 @@
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { setData, setToggle } from "../stores/listSlice";
+import {
+    doc,
+    updateDoc,
+    deleteDoc,
+} from "firebase/firestore";
+import { db } from "../firebase";
+
 
 
 export default function Item(props) {
@@ -9,16 +16,21 @@ export default function Item(props) {
 
     const index = useSelector(state => state.list).todos.findIndex(item => item.id === props.id);
     const list = useSelector(state => state.list).todos;
-    const { id, value, tic } = list[index];
+    const { id, value, tic, previousType } = list[index];
 
 
-
-    const saveHandler = e => {
+    const saveHandler = async e => {
         //saves the item value to the db
+        await updateDoc(doc(db, "user", id), { value: value })
     }
 
-    const deleteHandler = e => {
+    const deleteHandler = async e => {
         //deletes the item from the db
+        await deleteDoc(doc(db, "user", id));
+    }
+
+    const setToggle = async e => {
+        await updateDoc(doc(db, "user", id), tic ? { tic: false, type: previousType } : { tic: true, type: "Done" })
     }
 
     return (
@@ -27,7 +39,7 @@ export default function Item(props) {
                 value={value}
                 onChange={e => dispatch(setData({ id: id, value: e.target.value }))}
             />
-            <input checked={tic} type="checkbox" onChange={e => dispatch(setToggle(id))} />
+            <input checked={tic} type="checkbox" onChange={setToggle} />
 
             <button onClick={saveHandler}>
                 Save

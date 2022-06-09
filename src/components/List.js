@@ -20,15 +20,12 @@ export default function List() {
     const dispatch = useDispatch();
     const { todos } = useSelector(state => state.list)
 
+
     useEffect(() => {
         //this will run 1 time at the app begins
         //get all items as data from db according to the date value
 
-        const d = new Date();
-        const date = d.getDate().toString() + "." + (d.getMonth() + 1).toString() + "." + d.getFullYear().toString();
-        //get the selected date from calender instead
-
-        const q = query(collection(db, date));
+        const q = query(collection(db, "user"));
         onSnapshot(q, (querySnapshot) => {
             let newArr = [];
             querySnapshot.forEach((doc) => {
@@ -39,8 +36,7 @@ export default function List() {
 
         });
 
-    }, [])
-
+    },[])
 
 
     const dataParser = (type) => todos.map(element => {
@@ -51,14 +47,28 @@ export default function List() {
                 key={element.id}
                 id={element.id}
             />
+
         )
-
-
     });
 
     if (todos.length === 0) return null;
     return (
-        <div>
+        <div className="drag-n-drop">
+
+            {/*   <Header type="To Do" />
+            {todos.map(object => {
+                if ("To Do" !== object.type) return null;
+                return (
+                    <Item
+                        key={object.id}
+                        id={object.id}
+                        draggable
+                        className="dnd-item"
+                    />
+                )
+            })}
+ */}
+
             <div>
                 <Header type="To Do" />
                 {dataParser("To Do")}
@@ -71,6 +81,8 @@ export default function List() {
                 <Header type="Done" />
                 {dataParser("Done")}
             </div>
+
         </div>
     )
 }
+

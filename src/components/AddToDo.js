@@ -1,4 +1,4 @@
-import { collection, query, onSnapshot, doc, updateDoc, deleteDoc, addDoc } from "firebase/firestore";
+import { collection, addDoc } from "firebase/firestore";
 import { useState } from "react"
 import { db } from "../firebase";
 
@@ -12,14 +12,17 @@ export default function AddToDo() {
         if (value !== "") {
             //send the item data to db
 
+            const monthNames = ["January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"];
             const d = new Date();
-            const date = d.getDate().toString() + "." + (d.getMonth() + 1).toString() + "." + d.getFullYear().toString();
+            const today = d.getDate().toString() + " " + monthNames[d.getMonth()] + " " + d.getFullYear().toString();
 
-            await addDoc(collection(db, date), {
+            await addDoc(collection(db, "user"), {
                 value: value,
                 tic: false,
                 type: "To Do",
-                previousType: "To Do"
+                previousType: "To Do",
+                date: today
             });
         }
     }
