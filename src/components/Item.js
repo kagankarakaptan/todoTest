@@ -36,11 +36,11 @@ export default function Item(props) {
     return (
         <div>
             <input
+                id={id}
                 value={value}
                 onChange={e => dispatch(setData({ id: id, value: e.target.value }))}
             />
             <input checked={tic} type="checkbox" onChange={setToggle} />
-
             <button onClick={saveHandler}>
                 Save
             </button>
