@@ -1,14 +1,42 @@
-.main {
+.home {
   border-style: solid;
   width: fit-content;
+  text-align: center;
   /* position: absolute;
     top: 50%;
     left: 50%; */
 }
 
-.current {
-  background-color: black;
+.date {
+  margin: 1em;
+  padding: 1em;
+  background-color: rgb(185, 59, 59);
+}
+
+.addToDo {
+  margin: 1em;
+  padding: 1em;
+  background-color: rgb(131, 73, 73);
+}
+
+.list {
+}
+
+.header {
+  background-color: rgb(141, 109, 170);
+}
+
+.groups {
+}
+
+.dnd-group {
+  margin: 1em;
+  padding: 2em;
+  background-color: rgb(107, 161, 143);
 }
 
 .dnd-item {
+  margin: 1em;
+  padding: 1em;
+  background-color: rgb(80, 190, 190);
 }

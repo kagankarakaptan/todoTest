@@ -4,10 +4,10 @@ import List from "../components/List";
 
 export default function Home() {
   return (
-    <div className="main">
+    <div className="home">
       <Date />
-      <AddToDo />
-      <List />
+      <AddToDo  />
+      <List  />
     </div>
   )
 }

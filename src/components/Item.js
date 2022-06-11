@@ -36,7 +36,6 @@ export default function Item(props) {
     return (
         <div>
             <input
-                id={id}
                 value={value}
                 onChange={e => dispatch(setData({ id: id, value: e.target.value }))}
             />

@@ -29,7 +29,7 @@ export default function AddToDo() {
 
 
     return (
-        <div>
+        <div className="addToDo">
             <form onSubmit={handleSubmit}>
                 <input
                     type="text"
