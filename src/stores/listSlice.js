@@ -13,17 +13,18 @@ export const listSlice = createSlice({
             state.todos = action.payload
         },
 
-        setData: (state, action) => {
-            const { id, value } = action.payload;
-            const index = state.todos.findIndex(item => item.id === id);
-            state.todos[index].value = value;
-        },
-
         setObject: (state, action) => {
 
             state.todos[action.payload.index] = action.payload.object;
 
         },
+
+        setValue: (state, action) => {
+            const { id, value } = action.payload;
+            const index = state.todos.findIndex(item => item.id === id);
+            state.todos[index].value = value;
+        },
+
         setType: (state, action) => {
             state.todos[action.payload.index].type = action.payload.type;
         }
@@ -33,7 +34,7 @@ export const listSlice = createSlice({
 })
 
 
-export const { setArray, setData, setObject, setType } = listSlice.actions
+export const { setArray, setObject, setValue, setType } = listSlice.actions
 
 export default listSlice.reducer;
 

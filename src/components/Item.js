@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { setData, setToggle } from "../stores/listSlice";
+import { setValue } from "../stores/listSlice";
 import {
     doc,
     updateDoc,
@@ -37,7 +37,7 @@ export default function Item(props) {
         <div>
             <input
                 value={value}
-                onChange={e => dispatch(setData({ id: id, value: e.target.value }))}
+                onChange={e => dispatch(setValue({ id: id, value: e.target.value }))}
             />
             <input checked={tic} type="checkbox" onChange={setToggle} />
             <button onClick={saveHandler}>

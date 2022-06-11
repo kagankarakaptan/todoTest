@@ -3,7 +3,7 @@ import Item from "./Item"
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
-import { setArray, setObject, setType } from "../stores/listSlice";
+import { setArray, setType } from "../stores/listSlice";
 import { db } from "../firebase";
 import {
     collection,
@@ -11,7 +11,6 @@ import {
     onSnapshot,
     doc,
     updateDoc,
-    deleteDoc,
 } from "firebase/firestore";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
 import { useState } from "react";
@@ -36,15 +35,15 @@ export default function List() {
             });
 
             let tmp = []
-            let todoArr = newArr.forEach(e => { if (e.type === "To Do") tmp = [...tmp, e] })
-            todoArr = tmp
+            let pre = newArr.forEach(e => { if (e.type === groupTypes[0]) tmp = [...tmp, e] })
+            pre = tmp
             tmp = []
-            let inProgressArr = newArr.forEach(e => { if (e.type === "In Progress") tmp = [...tmp, e] })
-            inProgressArr = tmp;
+            let mid = newArr.forEach(e => { if (e.type === groupTypes[1]) tmp = [...tmp, e] })
+            mid = tmp;
             tmp = []
-            let doneArr = newArr.forEach(e => { if (e.type === "Done") tmp = [...tmp, e] })
-            doneArr = tmp
-            newArr = [...todoArr, ...inProgressArr, ...doneArr]
+            let post = newArr.forEach(e => { if (e.type === groupTypes[2]) tmp = [...tmp, e] })
+            post = tmp
+            newArr = [...pre, ...mid, ...post]
 
             dispatch(setArray(newArr))
 
@@ -126,7 +125,7 @@ export default function List() {
 
         if (!result.destination) return
 
-        if (result.type === "types") {
+        if (result.type === "groups") {
             const types = Reorder(
                 groupTypes,
                 result.source.index,
@@ -135,26 +134,71 @@ export default function List() {
             setGroupTypes(types);
 
         } else {
-            const newArr = Reorder(
-                todos,
-                result.source.index,
-                result.destination.index
-            );
 
-            dispatch(setArray(newArr))
+            if (result.source.droppableId === result.destination.droppableId) {
+                const newArr = Reorder(
+                    todos,
+                    result.source.index,
+                    result.destination.index
+                );
+
+                dispatch(setArray(newArr))
+            }
+            else if (result.destination.droppableId === "To Do") {
+                if (result.source.droppableId === "In Progress") {
+                    const updateDB = async () => updateDoc(doc(db, "user", todos[result.source.index].id), { type: "To Do" })
+                    updateDB();
+                }
+                else {
+                    // dispatch(setType({ index: result.source.index, type: "To Do" }))
+                    const updateDB = async () => updateDoc(doc(db, "user", todos[result.source.index].id), { type: "To Do", tic: false })
+                    updateDB();
+                }
+
+            }
+            else if (result.destination.droppableId === "In Progress") {
+                if (result.source.droppableId === "To Do") {
+                    const updateDB = async () => updateDoc(doc(db, "user", todos[result.source.index].id), { type: "In Progress" })
+                    updateDB();
+                }
+                else {
+                    // dispatch(setType({ index: result.source.index, type: "To Do" }))
+                    const updateDB = async () => updateDoc(doc(db, "user", todos[result.source.index].id), { type: "In Progress", tic: false })
+                    updateDB();
+                }
+
+            }
+            else if (result.destination.droppableId === "Done") {
+                // if (result.source.droppableId === "To Do") {
+                const updateDB = async () => updateDoc(doc(db, "user", todos[result.source.index].id), { type: "Done", tic: true })
+                updateDB();
+                // }
+                /* else {
+                    // dispatch(setType({ index: result.source.index, type: "To Do" }))
+                    const updateDB = async () => updateDoc(doc(db, "user", todos[result.source.index].id), { type: "In Progress", tic: false })
+                    updateDB();
+                } */
+
+            }
+
         }
 
 
 
-
-
-        // if (!result.destination) return null;
-        // const items = Array.from(groupTypes);
-        // const [reorderedItem] = items.splice(result.source.index, 1)
-        // items.splice(result.destination.index, 0, reorderedItem)
-
-        // setGroupTypes(items)
     }
+
+
+
+
+
+
+    // if (!result.destination) return null;
+    // const items = Array.from(groupTypes);
+    // const [reorderedItem] = items.splice(result.source.index, 1)
+    // items.splice(result.destination.index, 0, reorderedItem)
+
+    // setGroupTypes(items)
+
 
 
 
@@ -163,7 +207,7 @@ export default function List() {
     return (
         <div className="list">
             <DragDropContext onDragEnd={handleOnDragEnd}>
-                <Droppable droppableId="types" type="types">
+                <Droppable droppableId="types" type="groups">
                     {(provided, snapshot) => (
                         <div className="groups" ref={provided.innerRef}>
                             {groupTypes.map((type, index) => {
@@ -172,7 +216,7 @@ export default function List() {
                                         {(provided, snapshot) => (
                                             <div className="dnd-group" {...provided.draggableProps} ref={provided.innerRef} {...provided.dragHandleProps}>
                                                 <Header type={type} />
-                                                <Droppable droppableId={`types${type}`} type={`${index}`}>
+                                                <Droppable droppableId={type} type={"group"}>
                                                     {(provided, snapshot) => (
                                                         <div ref={provided.innerRef}>
                                                             {todos.map((object, index2) => {
